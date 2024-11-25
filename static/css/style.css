@@ -52,7 +52,7 @@ body {
 .logIn:hover {
     text-decoration: underline;
 }
-.textContaier {
+.textContainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
