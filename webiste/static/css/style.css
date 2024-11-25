@@ -336,13 +336,15 @@ a {
     justify-content: center;
     align-items: center;
     width: 450px;
-    height: 550px;
+    height: 570px;
     background-color: rgb(255, 255, 255,0.6);
     border-radius: 40px;
 
 }
 
-
+.h1SingUp {
+    margin-top: 40px;
+}
 .tagForm {
     width: 400px;  
     margin-top: 20px;
@@ -368,13 +370,18 @@ a {
 
 }
 .orFrame {
-   margin-top: 10px;
+  
    color: #EFF294;
 }
 .logIniconContainerSignUp {
     margin-top: 10px;
 
 }
+.icon-link {
+    margin-left: 20px;
+    
+}
+
 
 
 
