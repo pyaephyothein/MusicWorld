@@ -4,8 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_dance.contrib.google import make_google_blueprint, google
 from flask import jsonify
 from flask_mail import Mail, Message
-
-
+from flask_login import login_user, logout_user, login_required
 
 
 
@@ -91,38 +90,47 @@ def signup():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
-        
-        if not username or not email or not password or not confirm_password:
-            flash('All fields are required!', 'danger')
-            return redirect(url_for('signup'))
-
-        if password != confirm_password:
-            flash('Passwords do not match!', 'danger')
-            return redirect(url_for('signup'))
+        email_exists = User.query.filter_by(email=email).first()
+        username_exists = User.query.filter_by(username=username).first()
 
         
-        existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
-        if existing_user:
-            flash('Username or Email already exists!', 'danger')
-            return redirect(url_for('signup'))
+        if email_exists:
+            flash("Email is already in use.", category='error')
+            return render_template('signup.html')  
+        
+        
+        elif username_exists:
+            flash("Username is already in use.", category='error')
+            return render_template('signup.html')  
 
         
-        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        new_user = User(username=username, email=email, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
+        elif password != confirm_password:
+            flash('Passwords do not match', category="error")
+            return render_template('signup.html')  
 
         
-        send_success_email(email, username)
+        elif len(username) < 2:
+            flash('Username is too short', category='error')
+            return render_template('signup.html') 
 
         
-        flash('Sign-up successful! Please log in.', 'success')
-        return redirect(url_for('login'))
+        else:
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            new_user = User(username=username, email=email, password=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
+            
+            send_success_email(email, username)
+
+            
+            flash('Sign-up successful! Please log in.', category='success')
+            return redirect(url_for('login'))  
 
     return render_template('signup.html')
 
+
 def send_success_email(email, username):
-    """Send a sign-up confirmation email to the user."""
+    
     msg = Message(
         subject="Welcome to Your App!",
         recipients=[email],
@@ -137,25 +145,30 @@ def login():
         email_or_username = request.form.get('email_or_username')
         password = request.form.get('password')
 
-        
+       
         if not email_or_username or not password:
-            flash('All fields are required!', 'danger')
-            return redirect(url_for('login'))
+            flash('All fields are required!', category='error')
+            return render_template('login.html')
 
         
         user = User.query.filter((User.email == email_or_username) | (User.username == email_or_username)).first()
 
-        if user and bcrypt.check_password_hash(user.password, password):
-            
-            session['user_id'] = user.id
-            session['username'] = user.username
-
-            flash(f'Welcome back, {user.username}!', 'success')
-            return redirect(url_for('music_page'))  
+        
+        if not user:
+            flash('No account found with that email/username.', category='error')
+            return render_template('login.html')
 
         
-        flash('Invalid credentials!', 'danger')
-        return redirect(url_for('login'))
+        if not bcrypt.check_password_hash(user.password, password):
+            flash('Incorrect password.', category='error')
+            return render_template('login.html')
+
+        
+        session['user_id'] = user.id
+        session['username'] = user.username
+
+        flash(f'Welcome back, {user.username}!', category='success')
+        return redirect(url_for('musics'))  
 
     return render_template('login.html')
 
@@ -175,8 +188,15 @@ def google_login():
 
     session['user_id'] = user.id
     session['username'] = user.username
-    flash(f"Welcome, {user.username}!", "success")
-    return redirect(url_for("home"))
+    flash(f"Welcome, {user.username}!", category="success")
+    return redirect(url_for("muiscs"))
+
+@app.route('/users', methods=['GET'])
+def view_users():
+    """Route to view all users in the database."""
+    users = User.query.all()
+    user_data = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
+    return jsonify(user_data)
 
 
 # API route to fetch track data 

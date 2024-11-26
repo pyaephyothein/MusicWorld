@@ -273,6 +273,8 @@ h5.whiteOne {
 }
 .buttomLoginandSignup {
     margin-top: 15px;
+    margin-left: 50px;
+  
 }
 
 .logInForm {
@@ -290,6 +292,7 @@ h5.whiteOne {
     border-radius: 30px;
     height: 35px;
     font-size: 16px;
+    
 }
 a.buttomdivforSingUp {
     color: white;
@@ -320,6 +323,8 @@ a {
     font-size: 14px;
     margin-top: 20px;
     color: #EFF294;
+    margin-left: 50px;
+    
     
     
 }
@@ -343,7 +348,7 @@ a {
 }
 
 .h1SingUp {
-    margin-top: 40px;
+    margin-top: -20px;
 }
 .tagForm {
     width: 400px;  
@@ -374,14 +379,22 @@ a {
    color: #EFF294;
 }
 .logIniconContainerSignUp {
-    margin-top: 10px;
+    margin-top: 5px;
+
 
 }
 .icon-link {
-    margin-left: 20px;
+    margin-left: 10px;
     
 }
-
+.btn-close {
+    font-size: 15px;
+}
+.alert-container {
+    width: 250px;
+    height: auto;
+    margin-top: -30px;
+}
 
 
 

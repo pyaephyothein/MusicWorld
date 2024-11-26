@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,13 +8,12 @@
     <script src="https://kit.fontawesome.com/ea36fdeb86.js" crossorigin="anonymous"></script>
     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-   
 </head>
 <body>
     <div class="firstContainer">
         <div class="meuContainer">
             <a href="{{ url_for('home') }}" class="menu">Home</a>
-            <a href="{{url_for('musics') }}" class="menu">Musics</a>
+            <a href="{{ url_for('musics') }}" class="menu">Musics</a>
             <a href="{{ url_for('artist') }}" class="menu">Artists</a>
         </div>
         <div class="logInContainer">
@@ -21,9 +21,21 @@
         </div>
     </div>
 
-        
-    
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            
+            {% for message in messages %}
+            <div class="alert alert-danger alert-dismissible fade show "role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss = "alert"></button>
 
+            </div>
+            {% endfor %}
+            
+        {% endif %}
+    {% endwith %}
+        
     <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
 </body>
 </html>
+
